@@ -140,7 +140,7 @@ export default function AccountsView({
         <div className="banner">
           {error
             ? `Couldn't reach webCRM (${error}) — showing sample data.`
-            : "Sample data — add WEBCRM_TOKEN to .env.local to load your real webCRM accounts."}
+            : "Demo with invented sample data. The live version reads the sales team's webCRM (password-protected)."}
         </div>
       ) : (
         <div className="banner live">Live webCRM · clients who bought ISA titles in the last 12 months · synced {new Date(fetchedAt).toLocaleTimeString("en-GB")}</div>
