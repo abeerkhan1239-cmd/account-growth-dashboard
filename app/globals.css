@@ -1,42 +1,51 @@
+/* ISA Media Group brand (isamediagroup.com): teal #76AFBC, pale blue #D1DFE5,
+   greys from the logo (#272525 / #4D4D4F / #6D6E71), Poppins. Same tokens as ISA KnowledgeBot. */
 :root {
-  --bg: #f5f5f7;
+  --bg: #fafbfb;
   --card: #ffffff;
-  --ink: #1d1d1f;
-  --muted: #6e6e73;
-  --line: #e3e3e8;
-  --accent: #0071e3;
-  --accent-soft: #e8f1fc;
-  --red: #d70015;
-  --red-soft: #fdecee;
-  --amber: #b25000;
-  --amber-soft: #fff4e5;
-  --green: #1d8a3a;
-  --green-soft: #e9f7ee;
-  --radius: 16px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.04);
+  --ink: #272525;
+  --muted: #6d6e71;
+  --line: #dde6ea;
+  --accent: #2f6d7c;        /* brand teal deepened for text (AA contrast) */
+  --accent-brand: #76afbc;
+  --accent-soft: #e3eff2;
+  --btn: #3f7f8f;
+  --bar: #272525;
+  --bar-text: #e6e7e8;
+  --bar-muted: #a7a9ac;
+  --red: #c0262d;
+  --red-soft: #fbeaea;
+  --amber: #9a5b00;
+  --amber-soft: #fff3d6;
+  --green: #2e7d4f;
+  --green-soft: #e6f3ec;
+  --radius: 8px;
+  --shadow: 0 1px 2px rgba(39, 37, 37, 0.04), 0 8px 24px rgba(39, 37, 37, 0.06);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #000000;
-    --card: #1c1c1e;
-    --ink: #f5f5f7;
-    --muted: #98989d;
-    --line: #2c2c2e;
-    --accent: #2997ff;
-    --accent-soft: #0d2a45;
-    --red: #ff6961;
-    --red-soft: #3a1214;
-    --amber: #ffb340;
-    --amber-soft: #3a2a10;
-    --green: #30d158;
-    --green-soft: #0f2e18;
-    --shadow: none;
+    --bg: #1c1b1b;
+    --card: #242323;
+    --ink: #e6e7e8;
+    --muted: #a7a9ac;
+    --line: #3a3939;
+    --accent: #9ccbd6;
+    --accent-soft: #233a40;
+    --btn: #5f9cab;
+    --bar: #141313;
+    --red: #ff8a80;
+    --red-soft: #3a1a1a;
+    --amber: #f5b950;
+    --amber-soft: #3a2c12;
+    --green: #6fcf97;
+    --green-soft: #173323;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
 body {
-  font: 15px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+  font: 14.5px/1.5 var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 a { color: inherit; text-decoration: none; }
@@ -44,21 +53,24 @@ button { font: inherit; cursor: pointer; }
 
 .topbar {
   position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px;
-  background: color-mix(in srgb, var(--bg) 80%, transparent);
-  backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 12px 24px;
+  background: var(--bar); color: var(--bar-text);
+  border-bottom: 3px solid var(--accent-brand);
 }
-.brand { font-weight: 600; display: flex; align-items: center; gap: 8px; }
-.brand .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
-.topbar nav { display: flex; gap: 18px; color: var(--muted); font-size: 14px; }
-.topbar nav a:hover { color: var(--ink); }
+.brand { display: flex; align-items: center; gap: 14px; font-weight: 500; font-size: 14px; }
+.brand img { height: 26px; width: auto; display: block; }
+.brand .divider { width: 1px; height: 22px; background: #4d4d4f; }
+.brand .product { color: var(--bar-text); }
+.brand .product span { color: var(--bar-muted); font-weight: 400; }
+.topbar nav { display: flex; gap: 20px; color: var(--bar-muted); font-size: 14px; }
+.topbar nav a:hover { color: #fff; }
+@media (max-width: 560px) { .brand .divider, .brand .product span { display: none; } .topbar { padding: 12px 16px; } }
 .muted { color: var(--muted); }
 .wrap { max-width: 1240px; margin: 0 auto; padding: 28px 24px 80px; }
 
-h1 { font-size: 32px; letter-spacing: -0.02em; margin: 0 0 4px; }
-h2 { font-size: 19px; letter-spacing: -0.01em; margin: 0 0 12px; }
+h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 4px; }
+h2 { font-size: 18px; font-weight: 600; margin: 0 0 12px; }
 h3 { font-size: 15px; margin: 0 0 8px; }
 .sub { color: var(--muted); margin: 0 0 24px; }
 
@@ -69,15 +81,15 @@ h3 { font-size: 15px; margin: 0 0 8px; }
 .banner.live { background: var(--green-soft); color: var(--green); }
 
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.kpi { background: var(--card); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+.kpi { background: var(--card); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); border-top: 3px solid var(--accent-brand); }
 .kpi .label { color: var(--muted); font-size: 13px; }
-.kpi .value { font-size: 26px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; }
+.kpi .value { font-size: 24px; font-weight: 600; margin-top: 2px; }
 .kpi .hint { color: var(--muted); font-size: 12px; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 16px; }
 .seg { display: inline-flex; background: var(--line); border-radius: 10px; padding: 2px; }
 .seg button { border: 0; background: transparent; padding: 6px 14px; border-radius: 8px; color: var(--ink); font-size: 14px; }
-.seg button.on { background: var(--card); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 500; }
+.seg button.on { background: var(--card); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 500; }
 select, input[type="search"] {
   font: inherit; font-size: 14px; padding: 7px 10px; border-radius: 10px;
   border: 1px solid var(--line); background: var(--card); color: var(--ink);
@@ -137,7 +149,7 @@ ul.reasons li { margin: 3px 0; }
 .timeline li:last-child { border-bottom: 0; }
 .timeline .when { color: var(--muted); }
 
-.btn { border: 0; border-radius: 10px; padding: 8px 14px; background: var(--accent); color: #fff; font-weight: 500; font-size: 14px; }
+.btn { border: 0; border-radius: 6px; padding: 8px 14px; background: var(--btn); color: #fff; font-weight: 500; font-size: 14px; }
 .btn.ghost { background: var(--line); color: var(--ink); }
 .btn:disabled { opacity: .5; cursor: default; }
 .ai-out { white-space: pre-wrap; background: var(--bg); border-radius: 12px; padding: 14px; margin-top: 12px; font-size: 14px; }
