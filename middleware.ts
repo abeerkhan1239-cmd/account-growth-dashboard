@@ -6,10 +6,11 @@ import { NextResponse, type NextRequest } from "next/server";
 //   DASHBOARD_PASSWORD (browser basic-auth prompt, any username).
 //   If the password is missing the app fails closed instead of exposing CRM data.
 export function middleware(req: NextRequest) {
-  const live = !!process.env.WEBCRM_TOKEN;
+  // REQUIRE_PASSWORD=1 locks a deployment even before the CRM token is added.
+  const locked = !!process.env.WEBCRM_TOKEN || process.env.REQUIRE_PASSWORD === "1";
   const password = process.env.DASHBOARD_PASSWORD;
-  if (!live && !password) return NextResponse.next();
-  if (live && !password) {
+  if (!locked && !password) return NextResponse.next();
+  if (locked && !password) {
     return new NextResponse("Live CRM mode is locked: set DASHBOARD_PASSWORD to enable access.", { status: 503 });
   }
   const header = req.headers.get("authorization") || "";
