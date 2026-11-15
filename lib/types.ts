@@ -4,7 +4,8 @@ export type Order = {
   id: number;
   date: string; // ISO
   value: number; // DKK
-  product: ProductKey | null;
+  product: ProductKey | null; // main product
+  products: ProductKey[]; // every ISA product in the order (print + digital), main first
   label: string; // raw product/description text from the CRM
   status: string;
   nextFollowUp: string | null;

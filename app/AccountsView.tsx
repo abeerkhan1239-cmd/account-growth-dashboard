@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PRODUCTS, PRODUCT_BY_KEY, type ProductKey } from "@/lib/catalog";
+import { DIGITAL, PRODUCTS, PRODUCT_BY_KEY, type ProductKey } from "@/lib/catalog";
 import { ago, dkk, due } from "@/lib/format";
 import type { ContactPlan, Offer, Risk } from "@/lib/scoring";
 
@@ -143,7 +143,7 @@ export default function AccountsView({
             : "Demo with invented sample data. The live version reads the sales team's webCRM (password-protected)."}
         </div>
       ) : (
-        <div className="banner live">Live webCRM · clients who bought ISA titles in the last 12 months · synced {new Date(fetchedAt).toLocaleTimeString("en-GB")}</div>
+        <div className="banner live">Live webCRM · clients who bought ISA print or digital in the last 12 months · synced {new Date(fetchedAt).toLocaleTimeString("en-GB")}</div>
       )}
 
       <h1>Account growth</h1>
@@ -212,7 +212,7 @@ export default function AccountsView({
             <thead>
               <tr>
                 {th("name", "Client")}
-                <th>Products</th>
+                <th>Bought</th>
                 {th("spend", "Spend")}
                 {th("lastOrder", "Last order")}
                 {th("lastContact", "Last contact")}
@@ -230,8 +230,8 @@ export default function AccountsView({
                   </td>
                   <td>
                     <div className="pills">
-                      {PRODUCTS.map((p) => (
-                        <span key={p.key} className={`pill ${r.owned.includes(p.key) ? "on" : ""}`}>{p.short}</span>
+                      {PRODUCTS.filter((p) => r.owned.includes(p.key)).map((p) => (
+                        <span key={p.key} className={`pill on ${DIGITAL.includes(p.key) ? "dig" : ""}`}>{p.short}</span>
                       ))}
                     </div>
                   </td>

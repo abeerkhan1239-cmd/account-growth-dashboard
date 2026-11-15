@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PRODUCTS, PRODUCT_BY_KEY } from "@/lib/catalog";
+import { DIGITAL, PRODUCTS, PRODUCT_BY_KEY } from "@/lib/catalog";
 import { getDataset } from "@/lib/data";
 import { ago, dkk, due, shortDate } from "@/lib/format";
 import { analyseAll } from "@/lib/scoring";
@@ -38,14 +38,19 @@ export default async function ClientPage({ params }: { params: { id: string } })
 
       <div className="card">
         <h2>Products</h2>
-        <div className="products">
-          {PRODUCTS.map((p) => (
-            <div key={p.key} className={`prod ${i.owned.includes(p.key) ? "owned" : nextKeys.includes(p.key) ? "next" : ""}`}>
-              {i.owned.includes(p.key) ? "✓ " : nextKeys.includes(p.key) ? "→ " : ""}{p.name}
-              <small>{i.owned.includes(p.key) ? "Owned" : nextKeys.includes(p.key) ? "Recommended next" : "Not bought"}</small>
+        {[["Print", false], ["Digital", true]].map(([title, dig]) => (
+          <div key={String(title)}>
+            <div className="muted" style={{ fontSize: 13, fontWeight: 600, margin: "10px 0 6px" }}>{title}</div>
+            <div className="products">
+              {PRODUCTS.filter((p) => DIGITAL.includes(p.key) === dig).map((p) => (
+                <div key={p.key} className={`prod ${i.owned.includes(p.key) ? "owned" : nextKeys.includes(p.key) ? "next" : ""}`}>
+                  {i.owned.includes(p.key) ? "✓ " : nextKeys.includes(p.key) ? "→ " : ""}{p.name}
+                  <small>{i.owned.includes(p.key) ? "Owned" : nextKeys.includes(p.key) ? "Recommended next" : "Not bought"}</small>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
       <div className="space" />
 

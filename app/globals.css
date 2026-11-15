@@ -113,6 +113,7 @@ tr.row:hover td { background: var(--accent-soft); cursor: pointer; }
 .pills { display: flex; gap: 4px; flex-wrap: wrap; }
 .pill { font-size: 11px; padding: 2px 7px; border-radius: 6px; background: var(--line); color: var(--muted); }
 .pill.on { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.pill.on.dig { background: var(--green-soft); color: var(--green); }
 
 .radar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 @media (max-width: 900px) { .radar { grid-template-columns: 1fr 1fr; } }

@@ -77,6 +77,10 @@ const JOURNEYS: Journey[] = [
   { steps: ["sommer"] },
   { steps: ["hallonabo", "hn_digital", "hn_premium"] },
   { steps: ["digital", "creative"] },
+  { steps: ["hallonabo", "landing"], repeat: "hallonabo", repeatTimes: 1 },
+  { steps: ["digital", "content"] },
+  { steps: ["website", "landing"] },
+  { steps: ["hn_digital", "business_listing"] },
 ];
 
 const DAY = 86_400_000;
@@ -122,6 +126,7 @@ export function sampleDataset(): Dataset {
         date: new Date(Math.min(t, end)).toISOString(),
         value: Math.round((base * (0.75 + r() * 0.5) * trend) / 100) * 100,
         product: p,
+        products: [p],
         label: PRODUCT_BY_KEY[p].name,
         status: "Won",
         nextFollowUp: null,

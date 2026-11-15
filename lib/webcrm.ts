@@ -9,7 +9,7 @@
 // (form-urlencoded) -> short-lived JWT, sent as `Authorization: Bearer`.
 // Rate limit: 250 requests/minute; a 429 carries RetryAfterSeconds.
 
-import { matchProduct } from "./catalog";
+import { matchProducts } from "./catalog";
 import type { Activity, Client, Dataset, Order } from "./types";
 
 const BASE = process.env.WEBCRM_BASE_URL || "https://api.webcrm.com";
@@ -87,9 +87,11 @@ export async function fetchWebcrm(): Promise<Dataset> {
   const since = day(-HISTORY_DAYS);
   const today = day(1);
 
-  // An order counts as ISA when its product is an ISA title, or when no product
-  // was chosen but a quotation line names Hallo Nabo / Impact.
-  const isaOrders = `DeliveryOrderDate >= '${since}' and (DeliveryProduct like 'ISA%' or DeliveryId in (select QuotationLineOpportunityId from QuotationLine where QuotationLineData1 like '%Hallo Nabo%' or QuotationLineData1 like '%Impact%'))`;
+  // An order counts as ISA when its product is an ISA title or service, or when no
+  // product was chosen but a quotation line names one (Hallo Nabo, Impact,
+  // ISA Digital, ISA Creative, or ad production for an ISA title).
+  const isaLine = ["QuotationLineData1 like '%Hallo Nabo%'", "QuotationLineData1 like '%Impact%'", "QuotationLineData1 like 'ISA%'", "QuotationLineData2 like '%Hallo Nabo%'", "QuotationLineData2 like '%Impact%'"].join(" or ");
+  const isaOrders = `DeliveryOrderDate >= '${since}' and (DeliveryProduct like 'ISA%' or DeliveryId in (select QuotationLineOpportunityId from QuotationLine where ${isaLine}))`;
   const isaClients = `(select DeliveryOrganisationId from Delivery where ${isaOrders})`;
 
   const t0 = Date.now();
@@ -97,7 +99,7 @@ export async function fetchWebcrm(): Promise<Dataset> {
     `select DeliveryId, DeliveryOrganisationId, DeliveryOrderDate, DeliveryOrderValue, DeliveryProduct, DeliveryStatus, DeliveryResponsible, DeliveryNextFollowUp from Delivery where ${isaOrders}`,
   );
   const lines = await query(
-    `select QuotationLineOpportunityId, QuotationLineData1, QuotationLineData2 from QuotationLine where QuotationLineOpportunityId in (select DeliveryId from Delivery where ${isaOrders})`,
+    `select QuotationLineOpportunityId, QuotationLineData1, QuotationLineData2, QuotationLineData3 from QuotationLine where QuotationLineOpportunityId in (select DeliveryId from Delivery where ${isaOrders})`,
   );
   const orgs = await query(
     `select OrganisationId, OrganisationName, OrganisationIndustry, OrganisationCity, OrganisationCountry, OrganisationWww, OrganisationOwner, OrganisationCreatedAt, OrganisationLastActivityDate from Organisation where OrganisationId in ${isaClients}`,
@@ -114,11 +116,11 @@ export async function fetchWebcrm(): Promise<Dataset> {
   const userName = new Map(users.map((u) => [u.UserId, u.UserName || u.UserEmail || `User ${u.UserId}`]));
   const repName = (id: number) => (id ? userName.get(id) || `User ${id}` : "Unassigned");
 
-  const linesByOrder = new Map<number, [string, string][]>();
+  const linesByOrder = new Map<number, string[][]>();
   for (const l of lines) {
     const id = num(l.QuotationLineOpportunityId);
     const list = linesByOrder.get(id) ?? [];
-    list.push([str(l.QuotationLineData1), str(l.QuotationLineData2)]);
+    list.push([str(l.QuotationLineData1), str(l.QuotationLineData2), str(l.QuotationLineData3)]);
     linesByOrder.set(id, list);
   }
 
@@ -128,18 +130,20 @@ export async function fetchWebcrm(): Promise<Dataset> {
     if (!date) continue;
     const id = num(d.DeliveryId);
     const ql = linesByOrder.get(id) ?? [];
-    const product = matchProduct(str(d.DeliveryProduct), ql);
+    const products = matchProducts(str(d.DeliveryProduct), ql);
+    if (!products.length) continue; // e.g. only another publisher's lines
     const rawProduct = str(d.DeliveryProduct);
     const label = rawProduct.startsWith("ISA")
       ? rawProduct.replace(/^ISA - /, "")
-      : ql.find(([t]) => /hallo nabo|impact/i.test(t))?.filter((x) => x && x !== "-").join(" · ") || "Order";
+      : ql.find((l) => matchProducts(null, [l]).length)?.filter((x) => x && x !== "-").join(" · ") || "Order";
     const org = num(d.DeliveryOrganisationId);
     const list = ordersByOrg.get(org) ?? [];
     list.push({
       id,
       date,
       value: num(d.DeliveryOrderValue),
-      product,
+      product: products[0],
+      products,
       label,
       status: str(d.DeliveryStatus),
       nextFollowUp: iso(d.DeliveryNextFollowUp),

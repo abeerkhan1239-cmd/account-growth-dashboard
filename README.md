@@ -8,7 +8,7 @@ A dashboard for a media sales team that answers three questions about every adve
 
 Every score shows its reasons in plain language, so reps can trust it or argue with it. An AI assistant (Claude) drafts the "why now" summary, a follow-up email or a call script in **Danish, German or English**, and reps rate each suggestion 1–5 so quality is measured, not assumed.
 
-> Built for the sales team selling ISA Media Group's own titles (Hallo Nabo, Impact). This public version runs on **invented sample data**. No real client data is in this repository.
+> Built for the sales team selling ISA Media Group's own titles (Hallo Nabo, Impact) and digital services (SoMe, landing pages, content, websites). This public version runs on **invented sample data**. No real client data is in this repository.
 
 ## Screens
 

@@ -38,7 +38,7 @@ export function coPurchaseStats(clients: Client[]): CoStats {
   const owners = new Map<ProductKey, number>();
   const pairs = new Map<string, number>();
   for (const c of clients) {
-    const owned = Array.from(new Set(c.orders.map((o) => o.product).filter(Boolean))) as ProductKey[];
+    const owned = Array.from(new Set(c.orders.flatMap((o) => o.products)));
     for (const a of owned) {
       owners.set(a, (owners.get(a) ?? 0) + 1);
       for (const b of owned) if (a !== b) pairs.set(`${a}>${b}`, (pairs.get(`${a}>${b}`) ?? 0) + 1);
@@ -64,7 +64,7 @@ function median(xs: number[]): number | null {
 
 export function analyse(client: Client, co: CoStats, now = Date.now()): Insight {
   const orders = client.orders;
-  const owned = Array.from(new Set(orders.map((o) => o.product).filter(Boolean))) as ProductKey[];
+  const owned = Array.from(new Set(orders.flatMap((o) => o.products)));
   const totalSpend = orders.reduce((s, o) => s + o.value, 0);
   const lastOrder = orders.length ? new Date(orders[orders.length - 1].date).getTime() : null;
   const lastOrderDays = lastOrder ? daysBetween(lastOrder, now) : null;
